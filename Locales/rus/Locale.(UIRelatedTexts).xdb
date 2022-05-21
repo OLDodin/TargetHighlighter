@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UIRelatedTexts>
+  <items>
+    <Item>
+      <name>line1</name>
+      <resource href="line1.txt"/>
+    </Item>
+    <Item>
+      <name>colorMode1Btn</name>
+      <resource href="colorMode1Btn.txt"/>
+    </Item>
+    <Item>
+      <name>colorMode2Btn</name>
+      <resource href="colorMode2Btn.txt"/>
+    </Item>
+    <Item>
+      <name>saveBtn</name>
+      <resource href="saveBtn.txt"/>
+    </Item>
+    <Item>
+      <name>header</name>
+      <resource href="header.txt"/>
+    </Item>
+    <Item>
+      <name>useMode1</name>
+      <resource href="useMode1.txt"/>
+    </Item>
+    <Item>
+      <name>useMode2</name>
+      <resource href="useMode2.txt"/>
+    </Item>
+    <Item>
+      <name>disableSystemHighlight</name>
+      <resource href="disableSystemHighlight.txt"/>
+    </Item>
+    <Item>
+      <name>setColorButton</name>
+      <resource href="setColorButton.txt"/>
+    </Item>
+    <Item>
+      <name>red</name>
+      <resource href="red.txt"/>
+    </Item>
+    <Item>
+      <name>green</name>
+      <resource href="green.txt"/>
+    </Item>
+    <Item>
+      <name>blue</name>
+      <resource href="blue.txt"/>
+    </Item>
+    <Item>
+      <name>alpha</name>
+      <resource href="alpha.txt"/>
+    </Item>
+    <Item>
+      <name>headerColor</name>
+      <resource href="headerColor.txt"/>
+    </Item>
+  </items>
+</UIRelatedTexts>

@@ -29,7 +29,12 @@
 		<Item href="Scripts/ColorSettingsForm.lua"/>
 		<Item href="Scripts/mainscript.lua"/>
 	</ScriptFileRefs>
-	
+	<textsGroups>
+		<Item>
+			<groupName>rus</groupName>
+			<texts href="Locales/rus/Locale.(UIRelatedTexts).xdb#xpointer(/UIRelatedTexts)"/>
+		</Item>
+	</textsGroups>
   <textures href="Widgets/Textures/Textures.xdb#xpointer(/UIRelatedTextures)"/>
   <visObjects href=""/>
  
