@@ -5,12 +5,10 @@ local m_alphaWdg = nil
 local m_colorPreview = nil
 
 function CreateColorSettingsForm(aColor)
-	local form=createWidget(nil, "colorSettingsForm", "Form", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 400, 240, 200, 100)
+	local form=createWidget(mainForm, "colorSettingsForm", "Panel", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 400, 240, 200, 100)
 	priority(form, 3000)
 	hide(form)
 	
-	local configPanel=createWidget(form, "Panel", "Panel")
-
 	setLocaleText(createWidget(form, "configHeader", "TextView",  WIDGET_ALIGN_CENTER, nil, 100, 20, nil, 20))
 	setText(createWidget(form, "closeButton", "Button", WIDGET_ALIGN_HIGH, WIDGET_ALIGN_LOW, 20, 20, 20, 20), "x")
 	setLocaleText(createWidget(form, "setColorButton", "Button", WIDGET_ALIGN_CENTER, WIDGET_ALIGN_HIGH, 200, 30, nil, 20))
@@ -47,7 +45,7 @@ function CreateColorSettingsForm(aColor)
 	m_alphaWdg:Set(sliderParams)
 	
 	
-	DnD:Init(form, configPanel, true)
+	DnD:Init(form, form, true)
 	OnColorChanged()
 	
 	return form

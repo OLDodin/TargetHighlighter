@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <WidgetPanel>
 	<Priority>2</Priority>
-	<Name>ImageBox</Name>
-	<BackLayer href="Textures/ImageBox.xdb#xpointer(/WidgetLayerSimpleTexture)" />
+	<Name>DotIcon</Name>
+	<BackLayer href="Textures/DotIcon.xdb#xpointer(/WidgetLayerTiledTexture)" />
 	<Placement>
 		<X>
 			<Align>WIDGET_ALIGN_LOW</Align>
