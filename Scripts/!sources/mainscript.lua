@@ -51,9 +51,9 @@ end
 function ChangeMainWndVisible()
 	LoadSettings()
 	if isVisible(m_configForm) then
-		hide(m_configForm)
+		DnD.HideWdg(m_configForm)
 	else
-		show(m_configForm)
+		DnD.ShowWdg(m_configForm)
 	end
 end
 
@@ -231,7 +231,7 @@ function InitConfigForm()
 	m_preview2:SetBackgroundTexture(nil)
 	
 	setText(createWidget(form, "closeMainButton", "Button", WIDGET_ALIGN_HIGH, WIDGET_ALIGN_LOW, 20, 20, 20, 20), "x")
-	DnD:Init(form, form, true)
+	DnD.Init(form, form, true)
 	
 	return form
 end
@@ -312,7 +312,7 @@ function Init()
 		
 	local button=createWidget(mainForm, "THButton", "Button", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 25, 25, 300, 120)
 	setText(button, "TH")
-	DnD:Init(button, button, true)
+	DnD.Init(button, button, true)
 	
 	common.RegisterReactionHandler( RightClick, "RIGHT_CLICK" )
 	common.RegisterReactionHandler(ButtonPressed, "execute")
@@ -333,9 +333,9 @@ function Init()
 	local systemAddonStateChanged = false
 	local targetSelectionLoaded = false
 	local addons = common.GetStateManagedAddons()
-	for i = 0, GetTableSize( addons ) - 1 do
+	for i = 0, GetTableSize( addons ) do
 		local info = addons[i]
-		if  info.name == "TargetSelection" then
+		if info and info.name == "TargetSelection" then
 			if info.isLoaded then
 				targetSelectionLoaded = true
 			end
@@ -353,7 +353,7 @@ function Init()
 	if systemAddonStateChanged then
 		for i = 0, GetTableSize( addons ) - 1 do
 			local info = addons[i]
-			if  string.find(info.name, "AOPanelMod") then
+			if info and string.find(info.name, "AOPanelMod") then
 				if info.isLoaded then
 					common.StateUnloadManagedAddon( info.name )
 					common.StateLoadManagedAddon( info.name )

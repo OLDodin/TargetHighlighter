@@ -45,7 +45,7 @@ function CreateColorSettingsForm(aColor)
 	m_alphaWdg:Set(sliderParams)
 	
 	
-	DnD:Init(form, form, true)
+	DnD.Init(form, form, true)
 	OnColorChanged()
 	
 	return form
