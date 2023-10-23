@@ -252,18 +252,18 @@ function ShowColorPressed(aColor)
 		destroy(m_colorForm)
 	end
 	m_colorForm = CreateColorSettingsForm(aColor)
-	show(m_colorForm)
+	DnD.ShowWdg(m_colorForm)
 end
 
 function ColorMode1Changed(aWdg)
-	swap(getParent(aWdg))
+	DnD.SwapWdg(getParent(aWdg))
 	m_selectionColor1 = GetColorFromColorSettingsForm()
 	m_preview1:SetBackgroundColor(m_selectionColor1)
 	OnTargetChaged()
 end
 
 function ColorMode2Changed(aWdg)
-	swap(getParent(aWdg))
+	DnD.SwapWdg(getParent(aWdg))
 	m_selectionColor2 = GetColorFromColorSettingsForm()
 	m_preview2:SetBackgroundColor(m_selectionColor2)
 	OnTargetChaged()
@@ -325,7 +325,7 @@ function Init()
 	
 	AddReaction("THButton", function () ChangeMainWndVisible() end)
 	AddReaction("closeMainButton", function (aWdg) ChangeMainWndVisible() end)
-	AddReaction("closeButton", function (aWdg) swap(getParent(aWdg)) end)
+	AddReaction("closeButton", function (aWdg) DnD.SwapWdg(getParent(aWdg)) end)
 	AddReaction("colorMode1Btn", ShowColorMode1Pressed)
 	AddReaction("colorMode2Btn", ShowColorMode2Pressed)
 	AddReaction("saveBtn", SavePressed)
