@@ -1,5 +1,4 @@
 
-local m_reactions={}
 local m_configForm = nil
 local m_colorForm = nil
 
@@ -25,28 +24,6 @@ local m_preview2 = nil
 
 local m_currMountHP = nil
 
-function AddReaction(name, func)
-	if not m_reactions then m_reactions={} end
-	m_reactions[name]=func
-end
-
-function RunReaction(widget)
-	local name=getName(widget)
-	if name == "GetModeBtn" then
-		name=getName(getParent(widget))
-	end
-	if not name or not m_reactions or not m_reactions[name] then return end
-	m_reactions[name](widget)
-end
-
-function ButtonPressed(aParams)
-	RunReaction(aParams.widget)
-	changeCheckBox(aParams.widget)
-end
-
-function RightClick(params)
-
-end
 
 function ChangeMainWndVisible()
 	LoadSettings()
@@ -314,8 +291,9 @@ function Init()
 	setText(button, "TH")
 	DnD.Init(button, button, true)
 	
-	common.RegisterReactionHandler( RightClick, "RIGHT_CLICK" )
 	common.RegisterReactionHandler(ButtonPressed, "execute")
+	common.RegisterReactionHandler(CheckBoxChangedOn, "CheckBoxChangedOn")
+	common.RegisterReactionHandler(CheckBoxChangedOff, "CheckBoxChangedOff")
 	common.RegisterEventHandler( OnTargetChaged, "EVENT_AVATAR_TARGET_CHANGED")
 	common.RegisterEventHandler( OnCombatChaged, "EVENT_OBJECT_COMBAT_STATUS_CHANGED")
 	common.RegisterEventHandler(OnEventSecondTimer, "EVENT_SECOND_TIMER")
