@@ -1,15 +1,13 @@
 
 local m_configForm = nil
-local m_colorForm = nil
 
-local m_template = nil
 local m_highlightObjID = nil
 local m_needRestoreHighlightByCursor = false
 local m_needRestoreHighlightByTarget = false
 local m_higlightNow = true
 
 local m_selectionColor1 = { r = 1, g = 1, b = 0, a = 0.9 }
-local m_selectionColor2 = { r = 1, g = 0, b = 0, a = 0.85 }
+local m_selectionColor2 = { r = 1, g = 0, b = 0, a = 0.7 }
 local m_useMode1 = true
 local m_useMode2 = true
 local m_disableSystemHighlight = true
@@ -19,17 +17,19 @@ local m_colorMode2 = nil
 local m_modeCheckBox1 = nil
 local m_modeCheckBox2 = nil
 local m_disableSystemHighlightCheckBox = nil
-local m_preview1 = nil
-local m_preview2 = nil
 
 local m_currMountHP = nil
 
 
 function ChangeMainWndVisible()
 	LoadSettings()
+	if not m_configForm then
+		m_configForm = CreateConfigForm()
+	end
 	if isVisible(m_configForm) then
 		DnD.HideWdg(m_configForm)
 	else
+		LoadConfigFormSettings()
 		DnD.ShowWdg(m_configForm)
 	end
 end
@@ -146,8 +146,8 @@ function SavePressed()
 	m_disableSystemHighlight = getCheckBoxState(m_disableSystemHighlightCheckBox)
 	
 	local saveObj = {}
-	saveObj.color = m_selectionColor1
-	saveObj.color2 = m_selectionColor2
+	saveObj.color = GetColor(getChild(m_configForm, "colorSettingsForm1"))
+	saveObj.color2 = GetColor(getChild(m_configForm, "colorSettingsForm2"))
 	saveObj.useMode1 = m_useMode1
 	saveObj.useMode2 = m_useMode2
 	saveObj.disableSystemHighlight = m_disableSystemHighlight
@@ -169,81 +169,45 @@ function LoadSettings()
 		m_useMode2 = settings.useMode2
 		m_disableSystemHighlight = settings.disableSystemHighlight
 	end
-
-	
-	setLocaleText(m_modeCheckBox1, m_useMode1)
-	setLocaleText(m_modeCheckBox2, m_useMode2)
-	setLocaleText(m_disableSystemHighlightCheckBox, m_disableSystemHighlight)
-	
-	m_preview1:SetBackgroundColor(m_selectionColor1)
-	m_preview2:SetBackgroundColor(m_selectionColor2)
 	
 	OnTargetChaged()
 end
 
-function InitConfigForm()
-	setTemplateWidget(m_template)
+function LoadConfigFormSettings()
+	setLocaleText(m_modeCheckBox1, m_useMode1)
+	setLocaleText(m_modeCheckBox2, m_useMode2)
+	setLocaleText(m_disableSystemHighlightCheckBox, m_disableSystemHighlight)
+	
+	UpdateColorSettingsPanel(getChild(m_configForm, "colorSettingsForm1"), m_selectionColor1)
+	UpdateColorSettingsPanel(getChild(m_configForm, "colorSettingsForm2"), m_selectionColor2)
+	
+	SetEnabledColorPanel(getChild(m_configForm, "colorSettingsForm1"), getCheckBoxState(m_modeCheckBox1))
+	SetEnabledColorPanel(getChild(m_configForm, "colorSettingsForm2"), getCheckBoxState(m_modeCheckBox2))
+end
+
+function CreateConfigForm()
+	setTemplateWidget("common")
 	local formWidth = 300
-	local form=createWidget(mainForm, "ConfigForm", "Panel", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, formWidth, 250, 100, 120)
+	local form=createWidget(mainForm, "ConfigForm", "Panel", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, formWidth, 490, 100, 120)
 	priority(form, 2500)
 	hide(form)
 
-
 	local btnWidth = 100
 	
-	setLocaleText(createWidget(form, "saveBtn", "Button", WIDGET_ALIGN_HIGH, WIDGET_ALIGN_HIGH, btnWidth, 25, formWidth/2-btnWidth/2, 20))
+	setLocaleText(createWidget(form, "saveBtn", "Button", WIDGET_ALIGN_HIGH, WIDGET_ALIGN_HIGH, btnWidth, 25, formWidth/2-btnWidth/2, 15))
 	setLocaleText(createWidget(form, "header", "TextView", nil, nil, 140, 25, 20, 20))
-
 	
-	setLocaleText(createWidget(form, "colorMode1Btn", "Button", nil, nil, 80, 25, 10, 112))
-	setLocaleText(createWidget(form, "colorMode2Btn", "Button", nil, nil, 80, 25, 10, 164))
-			
 	m_disableSystemHighlightCheckBox = createWidget(form, "disableSystemHighlight", "CheckBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 280, 25, 10, 60)
 	m_modeCheckBox1 = createWidget(form, "useMode1", "CheckBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 280, 25, 10, 86)
-	m_modeCheckBox2 = createWidget(form, "useMode2", "CheckBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 280, 25, 10, 138)
-
-	m_preview1 = createWidget(form, "preview1", "ImageBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 24, 24, 266, 112)
-	m_preview2 = createWidget(form, "preview2", "ImageBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 24, 24, 266, 164)
-	m_preview1:SetBackgroundTexture(nil)
-	m_preview2:SetBackgroundTexture(nil)
+	m_modeCheckBox2 = createWidget(form, "useMode2", "CheckBox", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 280, 25, 10, 270)
+	
+	CreateColorSettingsPanel(form, m_selectionColor1, "colorSettingsForm1", "colorMode1Btn", 110)
+	CreateColorSettingsPanel(form, m_selectionColor2, "colorSettingsForm2", "colorMode2Btn", 290)
 	
 	setText(createWidget(form, "closeMainButton", "Button", WIDGET_ALIGN_HIGH, WIDGET_ALIGN_LOW, 20, 20, 20, 20), "x")
 	DnD.Init(form, form, true)
 	
 	return form
-end
-
-function ShowColorMode1Pressed()
-	AddReaction("setColorButton", ColorMode1Changed)
-	ShowColorPressed(m_selectionColor1)
-end
-
-function ShowColorMode2Pressed()
-	AddReaction("setColorButton", ColorMode2Changed)
-	ShowColorPressed(m_selectionColor2)
-end
-
-function ShowColorPressed(aColor)
-	if m_colorForm then
-		DnD.Remove(m_colorForm)
-		destroy(m_colorForm)
-	end
-	m_colorForm = CreateColorSettingsForm(aColor)
-	DnD.ShowWdg(m_colorForm)
-end
-
-function ColorMode1Changed(aWdg)
-	DnD.SwapWdg(getParent(aWdg))
-	m_selectionColor1 = GetColorFromColorSettingsForm()
-	m_preview1:SetBackgroundColor(m_selectionColor1)
-	OnTargetChaged()
-end
-
-function ColorMode2Changed(aWdg)
-	DnD.SwapWdg(getParent(aWdg))
-	m_selectionColor2 = GetColorFromColorSettingsForm()
-	m_preview2:SetBackgroundColor(m_selectionColor2)
-	OnTargetChaged()
 end
 
 function ChangeClientSettings()
@@ -281,13 +245,20 @@ function ChangeClientSettings()
 	end
 end
 
+function StrokePressed()
+	SetEnabledColorPanel(getChild(m_configForm, "colorSettingsForm1"), getCheckBoxState(m_modeCheckBox1))
+end
+
+function FillPressed()
+	SetEnabledColorPanel(getChild(m_configForm, "colorSettingsForm2"), getCheckBoxState(m_modeCheckBox2))
+end
+
 function Init()
 	ChangeClientSettings()
 	
-	m_template = getChild(mainForm, "Template")
-	setTemplateWidget(m_template)
+	setTemplateWidget("common")
 		
-	local button=createWidget(mainForm, "THButton", "Button", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 25, 25, 300, 120)
+	local button=createWidget(mainForm, "THButton", "Button", WIDGET_ALIGN_LOW, WIDGET_ALIGN_LOW, 32, 32, 300, 120)
 	setText(button, "TH")
 	DnD.Init(button, button, true)
 	
@@ -297,16 +268,14 @@ function Init()
 	common.RegisterEventHandler( OnTargetChaged, "EVENT_AVATAR_TARGET_CHANGED")
 	common.RegisterEventHandler( OnCombatChaged, "EVENT_OBJECT_COMBAT_STATUS_CHANGED")
 	common.RegisterEventHandler(OnEventSecondTimer, "EVENT_SECOND_TIMER")
-	
-	m_configForm = InitConfigForm()
+
 	LoadSettings()
 	
-	AddReaction("THButton", function () ChangeMainWndVisible() end)
-	AddReaction("closeMainButton", function (aWdg) ChangeMainWndVisible() end)
-	AddReaction("closeButton", function (aWdg) DnD.SwapWdg(getParent(aWdg)) end)
-	AddReaction("colorMode1Btn", ShowColorMode1Pressed)
-	AddReaction("colorMode2Btn", ShowColorMode2Pressed)
+	AddReaction("THButton", ChangeMainWndVisible)
+	AddReaction("closeMainButton", ChangeMainWndVisible)
 	AddReaction("saveBtn", SavePressed)
+	AddReaction("useMode1", StrokePressed)
+	AddReaction("useMode2", FillPressed)
 
 	local systemAddonStateChanged = false
 	local targetSelectionLoaded = false
