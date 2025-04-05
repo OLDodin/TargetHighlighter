@@ -155,8 +155,7 @@ function SavePressed()
 	
 	ClearAllHighlight(m_highlightObjID)
 	
-	common.StateUnloadManagedAddon( "UserAddon/TargetHighlighter" )
-	common.StateLoadManagedAddon( "UserAddon/TargetHighlighter" )
+	common.StateReloadManagedAddon(common.GetAddonSysName())
 end
 
 function LoadSettings()
@@ -277,38 +276,21 @@ function Init()
 	AddReaction("useMode1", StrokePressed)
 	AddReaction("useMode2", FillPressed)
 
-	local systemAddonStateChanged = false
 	local targetSelectionLoaded = false
-	local addons = common.GetStateManagedAddons()
-	for i = 0, GetTableSize( addons ) do
-		local info = addons[i]
-		if info and info.name == "TargetSelection" then
-			if info.isLoaded then
+	for _, info in ipairs(common.GetStateManagedAddons()) do
+		if info.name == "TargetSelection" then
+			if info.state == ADDON_STATE_LOADED then
 				targetSelectionLoaded = true
+				break
 			end
 		end
 	end
 	if m_disableSystemHighlight then 
 		common.StateUnloadManagedAddon( "TargetSelection" )
-		systemAddonStateChanged = targetSelectionLoaded		
 	else
 		common.StateLoadManagedAddon( "TargetSelection" )
 		common.RegisterEventHandler( OnEventIngameUnderCursorChanged, "EVENT_INGAME_UNDER_CURSOR_CHANGED")
-		systemAddonStateChanged = not targetSelectionLoaded
 	end
-	
-	if systemAddonStateChanged then
-		for i = 0, GetTableSize( addons ) - 1 do
-			local info = addons[i]
-			if info and string.find(info.name, "AOPanelMod") then
-				if info.isLoaded then
-					common.StateUnloadManagedAddon( info.name )
-					common.StateLoadManagedAddon( info.name )
-				end
-			end
-		end
-	end
-	
 	
 	AoPanelSupportInit()
 end
