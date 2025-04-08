@@ -252,6 +252,14 @@ function FillPressed()
 	SetEnabledColorPanel(getChild(m_configForm, "colorSettingsForm2"), getCheckBoxState(m_modeCheckBox2))
 end
 
+function AddonStateChanged(aParams)
+	if aParams.state == ADDON_STATE_UNLOADING then
+		if m_disableSystemHighlight then
+			common.StateLoadManagedAddon( "TargetSelection" )
+		end
+	end
+end
+
 function Init()
 	ChangeClientSettings()
 	
@@ -267,6 +275,7 @@ function Init()
 	common.RegisterEventHandler( OnTargetChaged, "EVENT_AVATAR_TARGET_CHANGED")
 	common.RegisterEventHandler( OnCombatChaged, "EVENT_OBJECT_COMBAT_STATUS_CHANGED")
 	common.RegisterEventHandler(OnEventSecondTimer, "EVENT_SECOND_TIMER")
+	common.RegisterEventHandler(AddonStateChanged, "EVENT_ADDON_LOAD_STATE_CHANGED", { name = common.GetAddonSysName() })
 
 	LoadSettings()
 	
